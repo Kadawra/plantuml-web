@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantUML Generator</title>
+</head>
+<body>
+    <h1>PlantUML Code eingeben</h1>
+    <textarea id="umlInput" rows="10" cols="50">@startuml\nAlice -> Bob: Hallo\n@enduml</textarea><br>
+    <button onclick="generateImage()">Generieren</button>
+    <p id="status"></p>
+    <img id="umlImage" style="display:none; margin-top:20px;" />
+
+    <script>
+        function generateImage() {
+            const umlCode = document.getElementById('umlInput').value;
+            fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uml: umlCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('umlImage').src = data.image_url;
+                document.getElementById('umlImage').style.display = 'block';
+                document.getElementById('status').innerText = "Bild erfolgreich generiert!";
+            })
+            .catch(error => document.getElementById('status').innerText = "Fehler beim Generieren.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Binärdateien ausschließen
+*.exe
+*.dll
+*.so
+*.dylib
+*.jar
+*.bin
+*.o
+*.a
+*.lib
+*.class
+
+# Umgebungs- und Konfigurationsdateien ausschließen
+.env
+
+# Log-Dateien
+*.log
+
+# VS Code-Editor-Einstellungen ausschließen
+.vscode/
+*.code-workspace
+
+# Python spezifisch
+__pycache__/
+
+# UML-Dateien (falls in Projekten verwendet)
+uml_images/
