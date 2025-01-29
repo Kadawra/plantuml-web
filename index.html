@@ -8,13 +8,21 @@
 <body>
     <h1>PlantUML Code eingeben</h1>
     <textarea id="umlInput" rows="10" cols="50">@startuml\nAlice -> Bob: Hallo\n@enduml</textarea><br>
-    <button onclick="generateImage()">Generieren</button>
+    <button id="generateBtn" onclick="generateImage()">Generieren</button>
     <p id="status"></p>
     <img id="umlImage" style="display:none; margin-top:20px;" />
 
     <script>
         function generateImage() {
             const umlCode = document.getElementById('umlInput').value;
+            const statusText = document.getElementById('status');
+            const umlImage = document.getElementById('umlImage');
+            const generateButton = document.getElementById('generateBtn');
+    
+            statusText.innerText = "Generiere Bild...";
+            umlImage.style.display = 'none';  // Verstecke das alte Bild während der Generierung
+            generateButton.disabled = true; // Verhindere mehrfaches Klicken
+    
             fetch('/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -22,12 +30,21 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('umlImage').src = data.image_url;
-                document.getElementById('umlImage').style.display = 'block';
-                document.getElementById('status').innerText = "Bild erfolgreich generiert!";
+                if (data.image_url) {
+                    umlImage.src = data.image_url + "?" + new Date().getTime(); // Cache umgehen
+                    umlImage.style.display = 'block';
+                    statusText.innerText = "Bild erfolgreich generiert!";
+                } else {
+                    statusText.innerText = "Fehler: " + (data.error || "Keine Bild-URL erhalten.");
+                }
             })
-            .catch(error => document.getElementById('status').innerText = "Fehler beim Generieren.");
+            .catch(error => {
+                statusText.innerText = "Fehler beim Generieren: " + error.message;
+            })
+            .finally(() => {
+                generateButton.disabled = false; // Button wieder aktivieren
+            });
         }
-    </script>
+    </script>    
 </body>
 </html>
