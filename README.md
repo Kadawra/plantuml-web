@@ -26,7 +26,9 @@ plantuml-web/
 ### **1️⃣ Ohne Docker (manuell per Terminal)**
 1. Repository klonen:
    ```bash
-   git clone https://github.com/dein-benutzername/plantuml-web.git
+   cd <lokales (leeres) GitHubVerzeichnis>
+  git clone https://github.com/Kadawra/plantuml-web.git
+  git checkout -b <lokales UpdateVerzeichnis> --track origin/bugfix-puml-overwrite
    cd plantuml-web
    ```
 
