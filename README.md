@@ -12,7 +12,6 @@ Ein **einfaches Web-Interface** zur Erstellung von UML-Diagrammen mit PlantUML.
 ## 📂 Projektstruktur
 
 ```
-plantuml-web/
 │-- app.py             # Flask-Anwendung
 │-- index.html         # Frontend mit HTML/JS
 │-- Dockerfile         # Container-Konfiguration
@@ -24,14 +23,15 @@ plantuml-web/
 ## ⚙️ Installation & Verwendung
 
 ### **1️⃣ Ohne Docker (manuell per Terminal)**
-1. Repository klonen:
+1. Repository klonen (ins aktuelle Verzeichnis):
    ```bash
-   git clone https://github.com/dein-benutzername/plantuml-web.git
-   cd plantuml-web
+   git clone -b main https://github.com/Kadawra/plantuml-web.git .
    ```
 
-2. Abhängigkeiten installieren:
+2. **Python-venv einrichten und Abhängigkeiten installieren:**
    ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
@@ -83,6 +83,7 @@ docker run -v $(pwd):/app -p 5000:5000 plantuml-web
 
 Falls du Änderungen testen willst, ohne Docker zu nutzen, kannst du Flask direkt starten:
 ```bash
+source venv/bin/activate  # Windows: venv\Scripts\activate
 python app.py
 ```
 
@@ -107,3 +108,4 @@ docker exec -it <container_id> bash
 ## 📄 Lizenz
 
 Dieses Projekt steht unter der **MIT-Lizenz**.
+
