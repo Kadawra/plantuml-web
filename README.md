@@ -30,7 +30,7 @@ Ein **einfaches Web-Interface** zur Erstellung von UML-Diagrammen mit PlantUML.
 
 2. **Python-venv einrichten und Abhängigkeiten installieren:**
    ```bash
-   python -m venv venv
+   python -m venv .venv
    source venv/bin/activate  # Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
@@ -83,7 +83,7 @@ docker run -v $(pwd):/app -p 5000:5000 plantuml-web
 
 Falls du Änderungen testen willst, ohne Docker zu nutzen, kannst du Flask direkt starten:
 ```bash
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source .venv/bin/activate  # Windows: venv\Scripts\activate
 python app.py
 ```
 

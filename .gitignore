@@ -12,6 +12,7 @@
 
 # Umgebungs- und Konfigurationsdateien ausschließen
 .env
+.venv
 
 # Log-Dateien
 *.log
