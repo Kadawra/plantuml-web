@@ -1,111 +1,127 @@
 # PlantUML Web Generator
 
-Ein **einfaches Web-Interface** zur Erstellung von UML-Diagrammen mit PlantUML.
+Ein **einfaches Web-Interface** zur Erstellung von UML-Diagrammen mit PlantUML – vollständig dockerisiert, mit REST-Service und Webfrontend.
+
+---
 
 ## 🚀 Features
 
-- ✍ **UML-Code im Browser** eingeben und als **SVG-Diagramm** generieren.
-- 🖥 **Flask-Backend** verarbeitet und erstellt die Diagramme.
-- 🐳 **Docker-Container** für einfache Bereitstellung.
-- ✅ **Unterstützt Bind-Mounts**, um Code-Änderungen direkt im laufenden Container zu übernehmen.
+- ✍ UML-Code im Browser eingeben und als **SVG-Diagramm** generieren
+- 🖥 Zwei getrennte Container:
+  - `flask-frontend` für Web-Eingabe & Verarbeitung
+  - `plantuml-service` zum Rendern der Diagramme via REST
+- 📦 Bereitstellung via Docker-Compose
+- 🔄 Diagramme werden als `.svg` zur Laufzeit erzeugt
+- 🔌 Klar getrennte Schnittstellen – erweiterbar für CI/CD, Mermaid etc.
+
+---
 
 ## 📂 Projektstruktur
 
+```text
+projekt/
+├── docker-compose.yml             # Docker-Setup für beide Services
+├── DOKU.md                        # Projektdokumentation
+├── README.md                      # Diese Datei
+├── .gitignore
+├── Doku.svg                       # Architektur
+├── uml_data/                      # 📌 Wird zur Laufzeit befüllt mit .puml/.svg
+│   └── diagram.puml
+├── plantuml-service/             # REST-Renderer (.puml -> .svg)
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── requirements.txt
+│   └── app.py
+└── flask-frontend/               # Webinterface & Nutzerinteraktion
+    ├── Dockerfile
+    ├── app.py
+    ├── requirements.txt
+    ├── init.puml
+    ├── .dockerignore
+    └── info.md
 ```
-│-- app.py             # Flask-Anwendung
-│-- index.html         # Frontend mit HTML/JS
-│-- Dockerfile         # Container-Konfiguration
-│-- requirements.txt   # Python-Abhängigkeiten
-│-- uml_images/        # Generierte Diagramme (wird ignoriert)
-└-- .gitignore         # Ausschluss unnötiger Dateien
-```
+
+---
 
 ## ⚙️ Installation & Verwendung
 
-### **1️⃣ Ohne Docker (manuell per Terminal)**
-1. Repository klonen (ins aktuelle Verzeichnis):
-   ```bash
-   git clone -b main https://github.com/Kadawra/plantuml-web.git .
-   ```
+### ▶️ Start mit Docker Compose (empfohlen)
 
-2. **Python-venv einrichten und Abhängigkeiten installieren:**
-   ```bash
-   python -m venv .venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+Voraussetzung: [Docker & Docker Compose](https://docs.docker.com/compose/install/) installiert.
 
-3. **PlantUML herunterladen** (falls noch nicht vorhanden):
-   ```bash
-   wget -O plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
-   ```
+```bash
+# Im Projektverzeichnis:
+docker-compose up --build
+```
 
-4. Anwendung starten:
-   ```bash
-   python app.py
-   ```
-
-5. Öffne den Browser unter **`http://localhost:5000`**.
+Dann im Browser öffnen:  
+👉 [http://localhost:5000](http://localhost:5000)
 
 ---
 
-### **2️⃣ Mit Docker (empfohlen)**
-Falls du **Docker** verwendest, kannst du den Container einfach starten.
+## 🧪 REST-API (plantuml-service)
 
-#### **Container bauen & starten**
-```bash
-docker build -t plantuml-web .
-docker run -p 5000:5000 plantuml-web
+Der `plantuml-service` stellt folgende Schnittstelle bereit:
+
+```
+POST /render
+Content-Type: text/plain
+Body: PlantUML-Code
+→ Rückgabe: SVG-Diagramm (image/svg+xml)
 ```
 
-💡 **Wichtig:** Falls du Änderungen an `app.py` oder `index.html` machst, musst du den Container **neustarten**, damit die Änderungen übernommen werden:
+Kann z. B. mit `curl` getestet werden:
 
 ```bash
-docker stop <container_id>
-docker rm <container_id>
-docker run -p 5000:5000 plantuml-web
+curl -X POST http://localhost:8080/render \
+     -H "Content-Type: text/plain" \
+     --data-binary "@startuml\nAlice -> Bob : Hello\n@enduml" \
+     > out.svg
 ```
 
 ---
 
-### **3️⃣ Docker mit Bind-Mounts nutzen (sofortige Code-Übernahme)**
-Falls du möchtest, dass Änderungen **ohne Neustart des Containers** übernommen werden, kannst du einen **Bind-Mount** nutzen:
+## 🧰 Manuelle Ausführung ohne Compose (nicht empfohlen)
+
+Möglich, aber ...:
 
 ```bash
-docker run -v $(pwd):/app -p 5000:5000 plantuml-web
+# Terminal 1
+cd plantuml-service
+docker build -t plantuml-service .
+docker run -p 8080:8080 plantuml-service
+
+# Terminal 2
+cd flask-frontend
+docker build -t flask-frontend .
+docker run -p 5000:5000 -v $(pwd)/../uml_data:/uml flask-frontend
 ```
-✅ **Vorteil:** Änderungen in `app.py` oder `index.html` werden sofort sichtbar.  
-⚠ **Nachteil:** Falls du neue Abhängigkeiten in `requirements.txt` hinzufügst, musst du den Container trotzdem neu bauen.
 
 ---
 
 ## 🛠 Entwicklung & Debugging
 
-Falls du Änderungen testen willst, ohne Docker zu nutzen, kannst du Flask direkt starten:
+Container-Logs anzeigen:
 ```bash
-source .venv/bin/activate  # Windows: venv\Scripts\activate
-python app.py
+docker-compose logs -f
 ```
 
-Falls du Logs aus dem Container sehen möchtest:
+Shell im Container öffnen:
 ```bash
-docker logs <container_id>
-```
-
-Falls du eine **Shell im Container öffnen** möchtest:
-```bash
-docker exec -it <container_id> bash
+docker exec -it flask-frontend-1 bash
 ```
 
 ---
 
-## 🏗 To-Do / Nächste Schritte
+## 🏗️ To-Do / Ideen
 
-- 🚀 **CI/CD-Pipeline mit GitHub Actions**
-- 🚀 **Mermaid.js-Support als nächster Schritt**
-- 🚀 **Bessere UI & UX-Verbesserungen**
+- 📈 CI/CD mit GitHub Actions
+- 🖼 Diagramm-Historie oder Speicherfunktion
+- 🌌 Mermaid-Support als Alternative zu PlantUML
+- 🎨 Webinterface mit Themes
+
+---
 
 ## 📄 Lizenz
 
-Dieses Projekt steht unter der **MIT-Lizenz**.
-
+MIT-Lizenz

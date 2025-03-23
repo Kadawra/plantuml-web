@@ -24,5 +24,8 @@
 # Python spezifisch
 __pycache__/
 
-# UML-Dateien (falls in Projekten verwendet)
-uml_images/
+# UML-Ausgaben nicht ins Repo
+uml_data/
+
+# Ignore tarballs
+*.tar.gz

@@ -1,0 +1,14 @@
+@startuml
+!theme plain
+left to right direction
+package "PlantUML-Konverter"{
+component "Flask" as Frontend
+component "PlantUML" as Backend
+
+}
+Webinterface --> Frontend : "send PlantUML-Code"
+Frontend --> Backend : ".puml"
+Backend --> Frontend : ".svg"
+Backend --> Backend : "generate .svg"
+Frontend --> Webbrowser : "show .svg"
+@enduml

@@ -1,0 +1,22 @@
+# Bytecode & Cache
+__pycache__/
+*.pyc
+
+# Editor- & Systemdateien
+*.swp
+*.log
+.DS_Store
+
+# Temporäre Dateien
+*.bak
+*.tmp
+*.tar.gz
+
+# Python venv (falls vorhanden)
+.venv/
+
+# Testdaten (falls vorhanden)
+tests/
+
+# plantuml.jar (nur wenn du es bei Build neu lädst)
+plantuml.jar
