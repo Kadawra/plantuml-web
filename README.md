@@ -12,7 +12,17 @@ Ein **einfaches Web-Interface** zur Erstellung von UML-Diagrammen mit PlantUML �
   - `plantuml-service` zum Rendern der Diagramme via REST
 - 📦 Bereitstellung via Docker-Compose
 - 🔄 Diagramme werden als `.svg` zur Laufzeit erzeugt
-- 🔌 Klar getrennte Schnittstellen – erweiterbar für CI/CD, Mermaid etc.
+- 🔌 Klar getrennte Schnittstellen – erweiterbar für CI/CD
+
+---
+
+## 🧠 Architektur
+
+![Architekturdiagramm](PlantUML-Service.svg)
+
+- **[Webinterface]('http://localhost:5000')**: Ein- und Ausgabe-Element des PlantUMLs
+- **[Flask-Frontend](flask-frontend/info.md)**: für Web-Eingabe & Verarbeitung
+- **[PlantUML-Service](plantUML-service/info.md)**: zum Rendern der Diagramme via REST
 
 ---
 
