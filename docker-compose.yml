@@ -1,0 +1,15 @@
+# docker-compose.yml
+services:
+  flask-frontend:
+    build: ./flask-frontend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uml_data:/uml
+    depends_on:
+      - plantuml-service
+
+
+  plantuml-service:
+    build: ./plantuml-service
+    # Kein ports-Eintrag nötig, da nur intern angesprochen

@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node (falls mal relevant)
+node_modules/
+dist/
+npm-debug.log

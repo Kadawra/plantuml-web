@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+package "PlantUML-Konverter"{    
+    component "Flask-Frontend" as Frontend
+    component "PlantUML-Service" as Backend
+}
+component "Webbrowser" as Webinterface
+"Init-Test" --> Frontend : "teste init.puml"
+Webinterface --> Frontend : "provide .puml"
+Frontend --> Backend : ".puml"
+Backend --> Frontend : ".svg"
+Backend --> Backend : "generate .svg"
+Frontend --> Webinterface : "show .svg"
+@enduml
